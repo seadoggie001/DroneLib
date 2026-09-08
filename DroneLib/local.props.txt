@@ -1,0 +1,29 @@
+<!-- 
+    Copy this file and rename it to local.props to set property values in the csproj file
+    Change the values below to match your current configuration
+    -->
+<Project>
+    <PropertyGroup>
+        <!-- Path to Steam -->
+        <SteamPath>/home/seadoggie/.steam/steam</SteamPath>
+        <!-- Path to the game -->
+        <GamePath>$(SteamPath)/steamapps/common/The Farmer Was Replaced</GamePath>
+        <!-- Path to the game's dlls -->
+        <ManagedPath>$(GamePath)/TheFarmerWasReplaced_Data/Managed</ManagedPath>
+        
+        <!-- Other paths, probably not used here -->
+        <BepInExPath>$(GamePath)/BepInEx</BepInExPath>
+        <PluginsPath>$(BepInExPath)/plugins</PluginsPath>
+        
+        <!-- Remove this path if you don't want to generate nuget packages on build --> 
+        <CustomNugetPath>/home/seadoggie/source/repos/nuget</CustomNugetPath>
+        <VersionSuffix>$([System.DateTime]::UtcNow.ToString("yyyyMMdd-HHmm"))</VersionSuffix>
+    </PropertyGroup>
+
+    <!-- Optionally, use this PostBuild event to quickly test by including a local nuget file in a mod -->
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="Exists($(CustomNugetPath))">
+        <Message Text="Packaging nuget" Importance="high"  />
+        
+        <Exec Command="dotnet pack --no-build --version $(Version)-$(VersionSuffix) --output $(CustomNugetPath) -c Debug" />
+    </Target>
+</Project>
