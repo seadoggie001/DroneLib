@@ -11,6 +11,7 @@
             https://api.nuget.org/v3/index.json;
             https://nuget.bepinex.dev/v3/index.json;
         </RestoreAdditionalProjectSources>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
     
     <!-- Import a settings file. See local.props.txt for more information -->
@@ -18,16 +19,18 @@
     
     <ItemGroup>
         <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
-        <PackageReference Include="BepInEx.Core" Version="5.*" />
-        <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
-        <PackageReference Include="UnityEngine.Modules" Version="2021.3.5" IncludeAssets="compile" />
-        <Reference Include="$(ManagedPath)/Core.dll" Publicize="true" />
-        <Reference Include="$(ManagedPath)/Utils.dll" Publicize="true" />
+        <PackageReference Include="BepInEx.Core" Version="5.*" PrivateAssets="all"  />
+        <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" PrivateAssets="all"  />
+        <PackageReference Include="UnityEngine.Modules" Version="2021.3.5" PrivateAssets="all" />
+        <Reference Include="$(ManagedPath)/Core.dll" Publicize="false" />
+        <Reference Include="$(ManagedPath)/Utils.dll" Publicize="false" />
         <Reference Include="UnityEngine.UI">
             <HintPath>$(ManagedPath)\UnityEngine.UI.dll</HintPath>
+            <Private>false</Private>
         </Reference>
         <Reference Include="Unity.TextMeshPro">
             <HintPath>$(ManagedPath)\Unity.TextMeshPro.dll</HintPath>
+            <Private>false</Private>
         </Reference>
     </ItemGroup>
 </Project>
