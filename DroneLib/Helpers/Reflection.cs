@@ -23,8 +23,19 @@ public static class Reflection
 
         // Get the actual value of the field
         object value = fieldInfo.GetValue(null);
-        if (value is not T valueOfType)
+        T valueOfType;
+        if (value is null)
+        {
+            valueOfType = default(T);
+        }
+        else if (value is not T value1)
+        {
             throw new Exception($"Reflection failed. Expected {type.Name}.{fieldName} to be of type {typeof(T).Name}.");
+        }
+        else
+        {
+            valueOfType = value1;
+        }
         // Return if an update isn't needed
         if (update is null) return valueOfType;
         
