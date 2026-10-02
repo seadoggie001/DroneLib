@@ -28,7 +28,7 @@ public class ItemUIPatch
         }
         catch (Exception ex)
         {
-            Plugin.LogException(ex, $"{nameof(Setup)}");
+            Main.LogException(ex, $"{nameof(Setup)}");
         }
     }
 }
