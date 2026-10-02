@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net46</TargetFramework>
+        <TargetFramework>net462</TargetFramework>
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Description>A modding library designed for the game The Farmer Was Replaced</Description>
         <Authors>seadoggie</Authors>
-        <Version>0.0.0</Version>
+        <Version>0.0.1</Version>
         <RestoreAdditionalProjectSources>
             https://api.nuget.org/v3/index.json;
             https://nuget.bepinex.dev/v3/index.json;
