@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using DroneLib.Item;
 using DroneLib.Model;
 using HarmonyLib;
 using UnityEngine;
@@ -11,6 +10,9 @@ namespace DroneLib.Patches;
 [SuppressMessage("ReSharper", "Unity.UnknownResource")]
 public static class ResourceManagerPatch
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static bool ForceReload = false;
 
     /// <summary>
@@ -56,7 +58,7 @@ public static class ResourceManagerPatch
         // Load base game items
         var items = Resources.LoadAll<ItemSO>("Items/");
         // Load modded items
-        items = items.AddRangeToArray(Registration.ModdedItems.Select(m => m.ItemSO).ToArray());
+        items = items.AddRangeToArray(Registration.Item.ModdedItems.Select(m => m.ItemSO).ToArray());
         // Order all items by priority
         ___items = items.OrderBy(x => x.priority).ToArray();
         // Assign itemIds
@@ -101,6 +103,11 @@ public static class ResourceManagerPatch
                 itemBlock.Deserialize();
             unlockSo.unlockCost.Deserialize();
             ___unlocks[unlockSo.unlockName] = unlockSo;
+        }
+
+        foreach (UnlockSO unlock in Registration.Unlock.ModdedUnlocks)
+        {
+            ___unlocks[unlock.unlockName] = unlock;
         }
     }
 }

@@ -66,7 +66,7 @@ public static class ItemBlockPatch
         if (other == null) return;
         UpdateItemCount(ref other);
     }
-    
+
     // Add 0 to the array until the item counts match StringIds.NumItems
     private static void UpdateItemCount(ref ItemBlock item)
     {

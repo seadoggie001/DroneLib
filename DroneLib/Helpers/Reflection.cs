@@ -36,9 +36,10 @@ public static class Reflection
         {
             valueOfType = value1;
         }
+
         // Return if an update isn't needed
         if (update is null) return valueOfType;
-        
+
         // Run the update function
         T newValue = update.Invoke(valueOfType);
         // Update the field

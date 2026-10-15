@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace DroneLib.Function;
+namespace DroneLib.Model;
 
 /// <summary>
 /// A function framework that allows for a simpler, faster way to create functions

@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using DroneLib.Model;
 using HarmonyLib;
 
 namespace DroneLib.Patches;
@@ -18,13 +19,13 @@ public class ExecutionPatch
             if (state is null) return;
 
             // Only handle modded side effect calls
-            if (state.currentSideEffect != Function.BaseFunction.ModdedSideEffect) return;
+            if (state.currentSideEffect != BaseFunction.ModdedSideEffect) return;
 
             // Locate the requested function
             string requestedFunction = ((PyString)state.currentSideEffectArgument).str;
 
             // Locate the modded function
-            Function.BaseFunction function = Function.Registration.ModdedFunctions.FirstOrDefault(m =>
+            BaseFunction function = Registration.Function.ModdedFunctions.FirstOrDefault(m =>
                 string.Equals(m.Name, requestedFunction, StringComparison.OrdinalIgnoreCase));
             if (function is null)
             {

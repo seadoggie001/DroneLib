@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DroneLib.Item;
+namespace DroneLib.Model;
 
 /// <summary>
 /// An object used to register custom items
@@ -14,7 +14,7 @@ public abstract class BaseItem
     /// ScriptableObjects should be created with <c>ScriptableObject.CreateInstance&lt;ItemSO&gt;()</c>
     /// </remarks>
     public ItemSO ItemSO { get; set; }
-    
+
     public bool IsRegistered() => ItemSO?.itemId != 0;
 
     public abstract Sprite LoadSprite();
