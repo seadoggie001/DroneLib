@@ -4,6 +4,9 @@ using HarmonyLib;
 
 namespace DroneLib.Patches;
 
+/// <summary>
+/// Modifications to the Execution class 
+/// </summary>
 [HarmonyPatch(typeof(Execution))]
 [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Harmony requires a specific naming convention")]
 public class ExecutionPatch

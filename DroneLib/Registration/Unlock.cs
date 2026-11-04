@@ -1,5 +1,3 @@
-using System.Reflection;
-using DroneLib.Helpers;
 using DroneLib.Model;
 using JetBrains.Annotations;
 
@@ -16,6 +14,11 @@ public class Unlock : IRegistration<UnlockDescription>
 
     private const string UnlockExceptionPrefix = "Failed to register unlock: ";
 
+    /// <summary>
+    /// Register an Unlock with the base game
+    /// </summary>
+    /// <param name="item"></param>
+    /// <exception cref="Exception"></exception>
     public void Add(UnlockDescription item)
     {
         // Localize the display name as the actual text displayed on the tooltip
@@ -33,29 +36,17 @@ public class Unlock : IRegistration<UnlockDescription>
 
         if (ModdedUnlocks.Any(m => m.unlockName == item.UnlockName))
             throw new Exception(UnlockExceptionPrefix + "Unable to register item, it was already registered");
-
-        Reflection.GetStaticField<Dictionary<string, UnlockSO>>(
-            type: typeof(ResourceManager),
-            fieldName: "unlocks",
-            flags: BindingFlags.NonPublic | BindingFlags.Static,
-            update: (unlocks) =>
-            {
-                unlocks[item.UnlockName] = item.ToUnlockSO();
-                return unlocks;
-            });
+        
+        ResourceManager.unlocks.Add(item.UnlockName, item.ToUnlockSO());
     }
 
+    /// <summary>
+    /// Un-register an unlock with the game
+    /// </summary>
+    /// <param name="name"></param>
     public void Remove(string name)
     {
-        Reflection.GetStaticField<Dictionary<string, UnlockSO>>(
-            type: typeof(ResourceManager),
-            fieldName: "unlocks",
-            flags: BindingFlags.NonPublic | BindingFlags.Static,
-            update: (unlocks) =>
-            {
-                unlocks.Remove(name);
-                return unlocks;
-            });
+        ResourceManager.unlocks.Remove(name);
         ModdedUnlocks = ModdedUnlocks.Where(m => m.name != name);
     }
 }

@@ -13,9 +13,17 @@ public abstract class BaseItem
     /// <remarks>
     /// ScriptableObjects should be created with <c>ScriptableObject.CreateInstance&lt;ItemSO&gt;()</c>
     /// </remarks>
-    public ItemSO ItemSO { get; set; }
+    public ItemSO ItemSo { get; set; }
 
-    public bool IsRegistered() => ItemSO?.itemId != 0;
+    /// <summary>
+    /// Checks if an item was already registered
+    /// </summary>
+    /// <returns></returns>
+    public bool IsRegistered() => ItemSo?.itemId != 0;
 
+    /// <summary>
+    /// Method used to load a sprite for the item
+    /// </summary>
+    /// <returns></returns>
     public abstract Sprite LoadSprite();
 }

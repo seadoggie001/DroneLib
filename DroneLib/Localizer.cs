@@ -1,6 +1,3 @@
-using System.Reflection;
-using DroneLib.Helpers;
-
 namespace DroneLib;
 
 /// <summary>
@@ -17,13 +14,7 @@ public static class Localize
     public static void RegisterValue(string key, string value)
     {
         Localizer.LoadLang(OptionHolder.GetString("language", "EN"));
-        Reflection.GetStaticField<Dictionary<string, string>>(typeof(Localizer), "language",
-            BindingFlags.NonPublic | BindingFlags.Static, (language) =>
-            {
-                if (language is null) Main.Log.LogWarning("Failed to register key: " + key);
-                language?.Add(key, value);
-                return language;
-            });
+        Localizer.language.Add(key, value);
     }
 
     //ToDo: Possibly help the user update the game's files? Seems like a bad idea though.

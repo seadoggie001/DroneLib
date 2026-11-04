@@ -6,7 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Description>A modding library designed for the game The Farmer Was Replaced</Description>
         <Authors>seadoggie</Authors>
-        <Version>0.0.2</Version>
+        <Version>0.0.3</Version>
         <RestoreAdditionalProjectSources>
             https://api.nuget.org/v3/index.json;
             https://nuget.bepinex.dev/v3/index.json;
@@ -18,12 +18,13 @@
     <Import Project="local.props" Condition="Exists('local.props')" />
     
     <ItemGroup>
+        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.3" PrivateAssets="all" />
         <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
         <PackageReference Include="BepInEx.Core" Version="5.*" PrivateAssets="all"  />
         <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" PrivateAssets="all"  />
         <PackageReference Include="UnityEngine.Modules" Version="2021.3.5" PrivateAssets="all" />
-        <Reference Include="$(ManagedPath)/Core.dll" Publicize="false" />
-        <Reference Include="$(ManagedPath)/Utils.dll" Publicize="false" />
+        <Reference Include="$(ManagedPath)/Core.dll" Publicize="true" />
+        <Reference Include="$(ManagedPath)/Utils.dll" Publicize="true" />
         <Reference Include="UnityEngine.UI">
             <HintPath>$(ManagedPath)\UnityEngine.UI.dll</HintPath>
             <Private>false</Private>

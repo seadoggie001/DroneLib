@@ -1,4 +1,4 @@
-using System.Reflection;
+using JetBrains.Annotations;
 
 namespace DroneLib.Model;
 
@@ -36,14 +36,14 @@ public abstract class BaseFunction
     public virtual IPyObject MethodObject => null;
 
     /// <summary>
-    /// Performs validation of the function arguments and the current state.
+    /// Validation of the function arguments and the current state.
     /// </summary>
     /// <remarks>
     /// Store data needed for taking action with <c>StoreArgument</c>
     /// </remarks>
     /// <param name="validationState"></param>
     /// <returns></returns>
-    public abstract void ValidateCall(FunctionValidation validationState);
+    public abstract void Binding(BindingParams validationState);
 
     /// <summary>
     /// Sets the program state to the triggered by the 
@@ -71,7 +71,7 @@ public abstract class BaseFunction
     /// <exception cref="NullReferenceException">Failed to locate internal function</exception>
     /// <exception cref="ExecuteException">Parameter list doesn't match expected types. Do not handle.</exception>
     public void CorrectParams(List<IPyObject> parameters, List<Type> expectedTypes) =>
-        CorrectParamsInfo.Invoke(null, [parameters, expectedTypes, Name]);
+        BuiltinFunctions.CorrectParams(parameters, expectedTypes, Name);
 
     /// <summary>
     /// Calls internal function that validates the parameter list is empty.
@@ -79,7 +79,7 @@ public abstract class BaseFunction
     /// <param name="parameters">Function parameters to validate</param>
     /// <exception cref="NullReferenceException">Failed to locate internal function</exception>
     /// <exception cref="ExecuteException">Parameter list is not empty. Do not handle.</exception>
-    public void NoParams(List<IPyObject> parameters) => NoParamsInfo.Invoke(null, [parameters, Name]);
+    public void NoParams(List<IPyObject> parameters) => BuiltinFunctions.NoParams(parameters, Name);
 
     /// <summary>
     /// Performs the action of the function. Replaces ApplySideEffect.
@@ -94,18 +94,17 @@ public abstract class BaseFunction
     public abstract double PerformAction(Execution execution, int droneId, object customArgument = null);
 
     internal PyFunction PyFunction { get; set; }
-
-    private static MethodInfo CorrectParamsInfo =>
-        typeof(BuiltinFunctions).GetMethod("CorrectParams", BindingFlags.Static | BindingFlags.NonPublic)
-        ?? throw new NullReferenceException("Unable to locate CorrectParams method");
-
-    private static MethodInfo NoParamsInfo =>
-        typeof(BuiltinFunctions).GetMethod("NoParams", BindingFlags.Static | BindingFlags.NonPublic)
-        ?? throw new NullReferenceException("Unable to locate NoParams method");
 }
 
 // ToDo: Explain what FunctionValidation is and maybe rename it
-public record FunctionValidation(List<IPyObject> Parameters, Simulation Simulation, Execution Execution, int DroneId)
+/// <summary>
+/// Information passed to validate that it is acceptable to call a function 
+/// </summary>
+/// <param name="Parameters"></param>
+/// <param name="Simulation"></param>
+/// <param name="Execution"></param>
+/// <param name="DroneId"></param>
+public record BindingParams(List<IPyObject> Parameters, Simulation Simulation, Execution Execution, int DroneId)
 {
     /// <summary>
     /// Parameters that the user passed to the function
@@ -113,7 +112,7 @@ public record FunctionValidation(List<IPyObject> Parameters, Simulation Simulati
     public List<IPyObject> Parameters { get; } = Parameters;
 
     /// <summary>
-    /// The game object? It wraps Farm and the running code 
+    /// The current simulation
     /// </summary>
     public Simulation Simulation { get; } = Simulation;
 
@@ -126,4 +125,10 @@ public record FunctionValidation(List<IPyObject> Parameters, Simulation Simulati
     /// ID of the drone that is performing the function
     /// </summary>
     public int DroneId { get; } = DroneId;
+
+    /// <summary>
+    /// Finds the current drone's program state
+    /// </summary>
+    /// <returns>The current program state or null</returns>
+    [CanBeNull] public ProgramState GetProgramState() => Execution?.States?[DroneId];
 }

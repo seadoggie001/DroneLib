@@ -1,5 +1,3 @@
-using System.Reflection;
-using DroneLib.Helpers;
 using DroneLib.Model;
 using HarmonyLib;
 using JetBrains.Annotations;
@@ -19,12 +17,17 @@ public class Item : IRegistration<BaseItem>
 
     private const string ItemExceptionPrefix = "Failed to register item: ";
 
+    /// <summary>
+    /// Registers an item in the game
+    /// </summary>
+    /// <param name="item"></param>
+    /// <exception cref="Exception"></exception>
     public void Add(BaseItem item)
     {
-        if (item.ItemSO is null) throw new Exception(ItemExceptionPrefix + $"{nameof(item.ItemSO)} is not initialized");
+        if (item.ItemSo is null) throw new Exception(ItemExceptionPrefix + $"{nameof(item.ItemSo)} is not initialized");
         if (item.IsRegistered()) return;
 
-        Main.Log.LogInfo($"Registering new custom item: {item.ItemSO.name}");
+        Main.Log.LogInfo($"Registering new custom item: {item.ItemSo.name}");
 
         AddItem_ResourceManager(item);
         AddItem_StringIds(item);
@@ -33,8 +36,14 @@ public class Item : IRegistration<BaseItem>
         ModdedItems = ModdedItems.AddItem(item);
     }
 
+    /// <summary>
+    /// Not implemented yet; do not use
+    /// </summary>
+    /// <param name="name"></param>
+    /// <exception cref="NotImplementedException"></exception>
     public void Remove(string name)
     {
+        //ToDo: Implement this or remove it
         throw new NotImplementedException("Items cannot be deregistered, at least yet");
     }
 
@@ -47,13 +56,10 @@ public class Item : IRegistration<BaseItem>
         try
         {
             // Find the next ID to use for the item
-            item.ItemSO.itemId = ResourceManager.GetAllItems().Count();
+            item.ItemSo.itemId = ResourceManager.GetAllItems().Count();
 
             // Get ResourceManager.items and add the item's ItemSO to it
-            Reflection.GetStaticField<ItemSO[]>(typeof(ResourceManager),
-                "items",
-                BindingFlags.NonPublic | BindingFlags.Static,
-                (items) => items.AddItem(item.ItemSO).ToArray());
+            ResourceManager.items = [.. ResourceManager.items, item.ItemSo];
         }
         catch (Exception ex)
         {
@@ -67,16 +73,10 @@ public class Item : IRegistration<BaseItem>
         try
         {
             // Get StringIds.itemNames and add the item's name to it
-            Reflection.GetStaticField<string[]>(typeof(StringIds),
-                "itemNames",
-                BindingFlags.NonPublic | BindingFlags.Static,
-                (itemNames) => itemNames.AddItem(item.ItemSO.name).ToArray());
-
+            StringIds.itemNames = [.. StringIds.itemNames, item.ItemSo.name];
+            
             // Get StringIds.itemIds and add the item's name and id to it
-            Dictionary<string, int> itemIds = Reflection.GetStaticField<Dictionary<string, int>>(typeof(StringIds),
-                "itemIds",
-                BindingFlags.NonPublic | BindingFlags.Static);
-            itemIds.Add(item.ItemSO.name, item.ItemSO.itemId);
+            StringIds.itemIds.Add(item.ItemSo.name, item.ItemSo.itemId);
         }
         catch (Exception ex)
         {

@@ -3,6 +3,9 @@ using HarmonyLib;
 
 namespace DroneLib;
 
+/// <summary>
+/// Startup class of the Mod
+/// </summary>
 public static class Main
 {
     internal static ManualLogSource Log { get; } = BepInEx.Logging.Logger.CreateLogSource("DroneLib");

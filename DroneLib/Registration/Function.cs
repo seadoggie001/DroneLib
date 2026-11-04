@@ -1,5 +1,3 @@
-using System.Reflection;
-using DroneLib.Helpers;
 using DroneLib.Model;
 using HarmonyLib;
 using JetBrains.Annotations;
@@ -12,11 +10,6 @@ namespace DroneLib.Registration;
 [UsedImplicitly]
 public class Function : IRegistration<BaseFunction>
 {
-    private static Dictionary<string, PyFunction> BuiltinFunctionsFunctions =>
-        Reflection.GetStaticField<Dictionary<string, PyFunction>>(typeof(BuiltinFunctions),
-            "functions",
-            BindingFlags.NonPublic | BindingFlags.Static);
-
     /// <summary>The functions already registered</summary>
     public static IEnumerable<BaseFunction> ModdedFunctions { get; private set; } = [];
 
@@ -30,11 +23,8 @@ public class Function : IRegistration<BaseFunction>
     {
         try
         {
-            // If the functions are null, try getting them to load them all
-            if (BuiltinFunctionsFunctions is null) _ = BuiltinFunctions.Functions;
-
-            // If they're still null, there are major issues
-            if (BuiltinFunctionsFunctions is null)
+            // If the functions are null, there are major issues
+            if (BuiltinFunctions.Functions is null)
                 throw new NullReferenceException("Failed to register function due to internal issues.");
 
             // Throw an exception if the modded function list already contains this function's name
@@ -42,7 +32,7 @@ public class Function : IRegistration<BaseFunction>
                 throw new Exception($"Cannot register another modded function with the name of {item.Name}.");
 
             // Throw an exception if the game's function list already contains this function's name
-            if (BuiltinFunctionsFunctions?.ContainsKey(item.Name) ?? false)
+            if (BuiltinFunctions.Functions.ContainsKey(item.Name))
                 throw new Exception($"Cannot register another function with the name of {item.Name}.");
 
             Main.Log.LogInfo($"Registering new custom function: {item.Name}.");
@@ -52,7 +42,7 @@ public class Function : IRegistration<BaseFunction>
                 item.Name,
                 (list, simulation, execution, droneId) =>
                 {
-                    item.ValidateCall(new FunctionValidation(list, simulation, execution, droneId));
+                    item.Binding(new BindingParams(list, simulation, execution, droneId));
                     item.RegisterSideEffect(execution.States[droneId]);
                     return 0.0;
                 }
@@ -64,7 +54,7 @@ public class Function : IRegistration<BaseFunction>
             ModdedFunctions = ModdedFunctions.AddItem(item);
 
             // Actually add it to the function list now
-            BuiltinFunctionsFunctions!.Add(item.Name, item.PyFunction);
+            BuiltinFunctions.functions.Add(item.Name, item.PyFunction);
         }
         catch (Exception ex)
         {
@@ -79,7 +69,7 @@ public class Function : IRegistration<BaseFunction>
     /// <param name="name"></param>
     public void Remove(string name)
     {
-        if (BuiltinFunctionsFunctions!.TryGetValue(name, out PyFunction _)) BuiltinFunctionsFunctions.Remove(name);
+        if (BuiltinFunctions.functions.TryGetValue(name, out PyFunction _)) BuiltinFunctions.functions.Remove(name);
 
         ModdedFunctions = ModdedFunctions.Where(m => m.Name != name);
     }

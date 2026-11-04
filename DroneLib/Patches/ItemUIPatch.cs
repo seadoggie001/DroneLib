@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 namespace DroneLib.Patches;
 
+/// <summary>
+/// Modifications to the ItemUI class
+/// </summary>
 [HarmonyPatch(typeof(ItemUI))]
 [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Harmony requires a specific naming convention")]
 public class ItemUIPatch
@@ -21,7 +24,7 @@ public class ItemUIPatch
         try
         {
             // Locate the modded item
-            BaseItem item = Registration.Item.ModdedItems.FirstOrDefault(m => m.ItemSO.itemId == itemId);
+            BaseItem item = Registration.Item.ModdedItems.FirstOrDefault(m => m.ItemSo.itemId == itemId);
             if (item is null) return;
 
             // Load the sprite
